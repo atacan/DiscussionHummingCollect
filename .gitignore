@@ -1,0 +1,16 @@
+Packages
+.build
+xcuserdata
+*.xcodeproj
+DerivedData/
+.DS_Store
+db.sqlite
+.swiftpm
+.env
+.env.*
+.envjson
+.envjson.*
+! .env.example
+.vscode
+id_rsa
+*.paw
