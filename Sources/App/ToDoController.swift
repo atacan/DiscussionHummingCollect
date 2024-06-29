@@ -7,17 +7,6 @@ import Foundation
 import AsyncHTTPClient
 import Hummingbird
 
-struct ToDo: Codable {
-    let userID, id: Int
-    let title: String
-    let completed: Bool
-
-    enum CodingKeys: String, CodingKey {
-        case userID = "userId"
-        case id, title, completed
-    }
-}
-
 struct ToDoController<Context: RequestContext>: Sendable {
     let httpClient: HTTPClient
     
@@ -36,6 +25,7 @@ struct ToDoController<Context: RequestContext>: Sendable {
         httpRequest.method = .GET
         let response = try await httpClient.execute(httpRequest, timeout: .minutes(10))
         let responseBody = try await response.body.collect(upTo: 1024 * 1024 * 5)
+        let todo = try JSONDecoder().decode(ToDo.self, from: responseBody)
         return response
     }
 }
@@ -47,5 +37,17 @@ extension HTTPClientResponse: ResponseGenerator {
             headers: .init(self.headers, splitCookie: false),
             body: .init(asyncSequence: self.body)
         )
+    }
+}
+
+
+struct ToDo: Codable {
+    let userID, id: Int
+    let title: String
+    let completed: Bool
+
+    enum CodingKeys: String, CodingKey {
+        case userID = "userId"
+        case id, title, completed
     }
 }
